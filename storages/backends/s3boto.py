@@ -17,7 +17,7 @@ from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.utils.encoding import force_unicode, smart_str
 
 try:
-    from boto.s3.connection import S3Connection, SubdomainCallingFormat
+    from boto.s3.connection import S3Connection, SubdomainCallingFormat, OrdinaryCallingFormat
     from boto.exception import S3ResponseError
     from boto.s3.key import Key
 except ImportError:
@@ -36,7 +36,7 @@ QUERYSTRING_EXPIRE = getattr(settings, 'AWS_QUERYSTRING_EXPIRE', 3600)
 REDUCED_REDUNDANCY = getattr(settings, 'AWS_REDUCED_REDUNDANCY', False)
 LOCATION = getattr(settings, 'AWS_LOCATION', '')
 CUSTOM_DOMAIN = getattr(settings, 'AWS_S3_CUSTOM_DOMAIN', None)
-CALLING_FORMAT = getattr(settings, 'AWS_S3_CALLING_FORMAT',
+CALLING_FORMAT = getattr(settings, 'AWS_coS3_CALLING_FORMAT',
                          SubdomainCallingFormat())
 SECURE_URLS = getattr(settings, 'AWS_S3_SECURE_URLS', True)
 FILE_NAME_CHARSET = getattr(settings, 'AWS_S3_FILE_NAME_CHARSET', 'utf-8')
@@ -160,7 +160,7 @@ class S3BotoStorage(Storage):
             access_key, secret_key = self._get_access_keys()
 
         self.connection = S3Connection(access_key, secret_key,
-            calling_format=calling_format)
+            calling_format=calling_format, host=custom_domain, is_safe=secure_urls)
         self._entries = {}
 
     @property
